@@ -1,3 +1,4 @@
+from ai_core import ask_ai
 import os
 from dotenv import load_dotenv
 
@@ -11,6 +12,11 @@ import base64
 from datetime import datetime
 import os
 
+# =====================================================
+# VERSION SYSTEM
+# =====================================================
+
+VERSION = datetime.now().strftime("%Y.%m.%d.%H%M")
 
 # =====================================================
 # 🔐 API KEYS (PASTE YOUR REAL KEYS HERE)
@@ -118,7 +124,7 @@ def create_or_update_file(filename, content):
     encoded_content = base64.b64encode(content.encode()).decode()
 
     data = {
-        "message": f"Update {filename} via JARVIS",
+        "message": f"Update {filename} via JARVIS v{VERSION}",
         "content": encoded_content,
         "branch": "main"
     }
@@ -148,7 +154,11 @@ def push_self():
             print(f"{filename} not found.")
 def handle_command(cmd):
     if cmd == "!status":
-        print("\nSystem Status: ONLINE\n")
+        print("\n=== SYSTEM STATUS ===")
+        print("Version:", VERSION)
+        print("Groq Key Loaded:", len(GROQ_API_KEY) > 0)
+        print("GitHub Key Loaded:", len(GITHUB_TOKEN) > 0)
+        print("=====================\n")
 
     elif cmd == "!goals":
         print("\nLong-Term Objectives:")
@@ -180,6 +190,9 @@ def handle_command(cmd):
             create_or_update_file(filename, content)
     elif cmd == "!pushself":
 	    push_self()
+    elif cmd == "!rollback":
+        print("Pulling latest stable version from GitHub...")
+        os.system("git pull origin main")
     else:
         print("\nUnknown command.\n")
 
@@ -213,18 +226,8 @@ def chat():
             continue
 
         try:
-            completion = client.chat.completions.create(
-                model=MODEL,
-                messages=[
-                    {"role": "system", "content": build_system_prompt()},
-                    {"role": "user", "content": user_input}
-                ],
-                temperature=0.7,
-                max_tokens=600
-            )
-
-            reply = completion.choices[0].message.content.strip()
-            print(f"\nJARVIS: {reply}\n")
+            reply = ask_ai(user_input)
+            print("\nJARVIS:", reply)
 
             timestamp = datetime.now().strftime("%H:%M:%S")
             memory_update = f"[{timestamp}] You: {user_input}\n[{timestamp}] JARVIS: {reply}\n\n"
