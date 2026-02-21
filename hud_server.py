@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+
 # =====================================================
 # 🔐 API KEYS (PASTE YOUR REAL KEYS HERE)
 # =====================================================
@@ -15,7 +16,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_USERNAME = "5yopetey-byte"
 GITHUB_REPO = "JARVIS2"
-
+print("TOKEN LENGTH:", len(GITHUB_TOKEN) if GITHUB_TOKEN else 0)
 MODEL = "llama-3.3-70b-versatile"
 
 # =====================================================
