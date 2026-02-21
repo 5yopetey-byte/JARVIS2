@@ -1,22 +1,25 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "").strip()
 from groq import Groq
 import requests
 import base64
 from datetime import datetime
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 
 # =====================================================
 # 🔐 API KEYS (PASTE YOUR REAL KEYS HERE)
 # =====================================================
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GITHUB_USERNAME = "5yopetey-byte"
 GITHUB_REPO = "JARVIS2"
-print("TOKEN LENGTH:", len(GITHUB_TOKEN) if GITHUB_TOKEN else 0)
+print("GITHUB RAW:", repr(GITHUB_TOKEN))
+print("GITHUB LENGTH:", len(GITHUB_TOKEN))
 MODEL = "llama-3.3-70b-versatile"
 
 # =====================================================
@@ -102,7 +105,7 @@ def create_or_update_file(filename, content):
     url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{GITHUB_REPO}/contents/{filename}"
 
     headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Authorization": f"token {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json"
     }
     print("TOKEN LENGTH:", len(GITHUB_TOKEN))
